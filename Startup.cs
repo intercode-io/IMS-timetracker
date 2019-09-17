@@ -14,6 +14,11 @@ using IMS_Timetracker.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.StaticFiles;
 using System.IO;
+using IMS_Timetracker.Entities;
+using IMS_Timetracker.Dto;
+using IMS_Timetracker.Abstraction;
+using IMS_Timetracker.Mappers;
+using IMS_Timetracker.Services;
 
 namespace IMS_Timetracker
 {
@@ -42,6 +47,9 @@ namespace IMS_Timetracker
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddSingleton<IMapper<Entities.Project, Dto.Project>, ProjectMapper>();
+            services.AddScoped<IProjectService, ProjectService>();
 
             services.AddDbContext<TimetrackerDbContext>(x => x.UseSqlServer(connection));
         }
@@ -49,6 +57,18 @@ namespace IMS_Timetracker
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // global cors policy
+            app.UseCors(builder =>
+                builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed((host) => true)
+                    .WithOrigins(new string[]
+                    {
+                        "http://localhost:4200",
+                    })
+                    .AllowCredentials()
+            );
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -73,6 +93,7 @@ namespace IMS_Timetracker
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
             app.UseMvc();
         }
     }
