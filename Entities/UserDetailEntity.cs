@@ -8,6 +8,6 @@ namespace IMS_Timetracker.Entities
         public int Id { get; set; }
 
         public int UserId { get; set; }
-        public User User { get;set; }
+        //TODO add relationships public UserEntity UserEntity { get;set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace IMS_Timetracker.Entities
@@ -17,9 +18,9 @@ namespace IMS_Timetracker.Entities
         public float Hours { get; set; }
 
         [Timestamp]
-        public byte TimeStart { get; set; }
+        public DateTime TimeStart { get; set; }
         
         [Timestamp]
-        public byte TimeEnd { get; set; }
+        public DateTime TimeEnd { get; set; }
     }
 }

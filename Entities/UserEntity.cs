@@ -4,7 +4,7 @@ using IMS_Timetracker.Entities.Privileges;
 
 namespace IMS_Timetracker.Entities
 {
-    public class User
+    public class UserEntity
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -16,6 +16,6 @@ namespace IMS_Timetracker.Entities
         
         public ICollection<ProjectUserRole> ProjectsUsersRoles { get; set; }
         
-        public ICollection<TimeLog> TimeLogs { get; set; }
+        public ICollection<TimeLogEntity> TimeLogs { get; set; }
     }
 }

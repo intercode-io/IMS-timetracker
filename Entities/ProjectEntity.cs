@@ -9,6 +9,6 @@ namespace IMS_Timetracker.Entities
         
         public string Title { get; set; }
         public ICollection<ProjectUserRole> ProjectsUsersRoles { get; set; }
-        public ICollection<TimeLog> TimeLogs { get; set; }
+        public ICollection<TimeLogEntity> TimeLogs { get; set; }
     }
 }
