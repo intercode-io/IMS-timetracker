@@ -3,7 +3,7 @@ using IMS_Timetracker.Enums;
 
 namespace IMS_Timetracker.Entities
 {
-    public class UserDetail
+    public class UserDetailEntity
     {
         public int Id { get; set; }
 

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMS_Timetracker.Migrations
 {
     [DbContext(typeof(TimetrackerDbContext))]
-    [Migration("20191002132006_RemoveNullableFields")]
-    partial class RemoveNullableFields
+    [Migration("20190929154301_AddDefaultProjects")]
+    partial class AddDefaultProjects
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,15 +23,15 @@ namespace IMS_Timetracker.Migrations
 
             modelBuilder.Entity("IMS_Timetracker.Entities.Privileges.ProjectUserRole", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("ProjectId");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int?>("RoleId");
 
-                    b.Property<int>("UserId");
+                    b.Property<int?>("UserId");
 
                     b.HasKey("Id");
 
@@ -42,29 +42,6 @@ namespace IMS_Timetracker.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ProjectsUsersRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 6,
-                            ProjectId = 1,
-                            RoleId = 1,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ProjectId = 2,
-                            RoleId = 1,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ProjectId = 3,
-                            RoleId = 1,
-                            UserId = 2
-                        });
                 });
 
             modelBuilder.Entity("IMS_Timetracker.Entities.Privileges.Role", b =>
@@ -129,7 +106,7 @@ namespace IMS_Timetracker.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IMS_Timetracker.Entities.ProjectEntity", b =>
+            modelBuilder.Entity("IMS_Timetracker.Entities.Project", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,7 +136,7 @@ namespace IMS_Timetracker.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IMS_Timetracker.Entities.TimeLogEntity", b =>
+            modelBuilder.Entity("IMS_Timetracker.Entities.TimeLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,11 +148,11 @@ namespace IMS_Timetracker.Migrations
 
                     b.Property<int>("ProjectId");
 
-                    b.Property<DateTime>("TimeEnd")
+                    b.Property<byte>("TimeEnd")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<DateTime>("TimeStart")
+                    b.Property<byte>("TimeStart")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -190,20 +167,7 @@ namespace IMS_Timetracker.Migrations
                     b.ToTable("TimeLogs");
                 });
 
-            modelBuilder.Entity("IMS_Timetracker.Entities.UserDetailEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserDetails");
-                });
-
-            modelBuilder.Entity("IMS_Timetracker.Entities.UserEntity", b =>
+            modelBuilder.Entity("IMS_Timetracker.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -232,21 +196,35 @@ namespace IMS_Timetracker.Migrations
                         });
                 });
 
+            modelBuilder.Entity("IMS_Timetracker.Entities.UserDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserDetails");
+                });
+
             modelBuilder.Entity("IMS_Timetracker.Entities.Privileges.ProjectUserRole", b =>
                 {
-                    b.HasOne("IMS_Timetracker.Entities.ProjectEntity", "ProjectEntity")
+                    b.HasOne("IMS_Timetracker.Entities.Project", "Project")
                         .WithMany("ProjectsUsersRoles")
                         .HasForeignKey("ProjectId");
 
                     b.HasOne("IMS_Timetracker.Entities.Privileges.Role", "Role")
                         .WithMany("ProjectsUsersRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RoleId");
 
-                    b.HasOne("IMS_Timetracker.Entities.UserEntity", "UserEntity")
+                    b.HasOne("IMS_Timetracker.Entities.User", "User")
                         .WithMany("ProjectsUsersRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IMS_Timetracker.Entities.Privileges.RolePermission", b =>
@@ -257,16 +235,24 @@ namespace IMS_Timetracker.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IMS_Timetracker.Entities.TimeLogEntity", b =>
+            modelBuilder.Entity("IMS_Timetracker.Entities.TimeLog", b =>
                 {
-                    b.HasOne("IMS_Timetracker.Entities.ProjectEntity", "ProjectEntity")
+                    b.HasOne("IMS_Timetracker.Entities.Project", "Project")
                         .WithMany("TimeLogs")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("IMS_Timetracker.Entities.UserEntity", "UserEntity")
+                    b.HasOne("IMS_Timetracker.Entities.User", "User")
                         .WithMany("TimeLogs")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IMS_Timetracker.Entities.UserDetail", b =>
+                {
+                    b.HasOne("IMS_Timetracker.Entities.User", "User")
+                        .WithOne("UserDetail")
+                        .HasForeignKey("IMS_Timetracker.Entities.UserDetail", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

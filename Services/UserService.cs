@@ -6,78 +6,38 @@ using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Context;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Exceptions;
-using IMS_Timetracker.Mappers;
-using Microsoft.AspNetCore.Rewrite.Internal.ApacheModRewrite;
-using IMS_Timetracker.Entities.Privileges;
-using IMS_Timetracker.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace IMS_Timetracker.Services
 {
-    public interface IProjectService
+    public interface IUserServivce
     {
-        Task<Dto.Project> CreateProject(Dto.Project project);
-        Task<List<Dto.Project>> GetProjectList(int userId);
+        Task<Dto.User> GetUser(int id);
     }
     
-    public class ProjectService: IProjectService
+    public class UserServivce: IUserServivce
     {
         private readonly TimetrackerDbContext _context;
-        private readonly IMapper<Project, Dto.Project> _projectMapper;
+        private readonly IMapper<UserEntity, Dto.User> _userMapper;
 
-        public ProjectService(
+        public UserServivce(
             TimetrackerDbContext context,
-            IMapper<Project, Dto.Project> projectMapper
+            IMapper<UserEntity, Dto.User> userMapper
         )
         {
             _context = context;
-            _projectMapper = projectMapper;
+            _userMapper = userMapper;
         }
 
-        public async Task<Dto.Project> CreateProject(Dto.Project project)
+        public async Task<Dto.User> GetUser(int id)
         {
-            try
-            {
-                Entities.Project projectEntity = _projectMapper.Map(project);
-                var projectDb = await _context.Projects.AddAsync(projectEntity);
-                await _context.SaveChangesAsync();
-
-                if (projectEntity.ProjectsUsersRoles == null)
-                {
-                    projectEntity.ProjectsUsersRoles = new List<ProjectUserRole>();
-                }
-                
-                projectEntity.ProjectsUsersRoles.Add(new ProjectUserRole
-                {
-                    ProjectId = projectEntity.Id,
-                    RoleId = 1,
-                    UserId = 1
-                });
-                
-                _context.Projects.Update(projectEntity);
-                await _context.SaveChangesAsync();
-
-                return _projectMapper.Map(projectEntity);
-            }
-            catch (Exception exception)
-            {
-                throw new CouldNotSaveException("Can't create new project.", exception.Message);
-            }
-        }
-
-        public async Task<List<Dto.Project>> GetProjectList(int userId)
-        {
-            List<Dto.Project> projectList = await _context.Projects
-                .Include(pur => pur.ProjectsUsersRoles)
-                .Where(purs => purs.ProjectsUsersRoles.Any(att => att.UserId == userId))
-                .Select(p => new Dto.Project
-                {
-                    Id = p.Id,
-                    Title = p.Title
-                }).ToListAsync();
+            UserEntity userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             
-            return projectList;
-//            return new List<Dto.Project>();
+            if (userEntity != null)
+            {
+                return _userMapper.Map(userEntity);
+            }
+            throw new NoSuchEntityException("[User Service] Could not get User from db context.");
         }
     }
 }

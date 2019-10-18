@@ -2,44 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IMS_Timetracker.Entities;
+using IMS_Timetracker.Exceptions;
+using IMS_Timetracker.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IMS_Timetracker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        private readonly UserServivce _userServivce;
+        
+        public UsersController(
+            UserServivce userServivce
+        )
         {
-            return "value";
+            _userServivce = userServivce;
         }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
+        
+        [HttpGet("get/{id}")]
+        public async Task<ActionResult> GetUser(int id)
         {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            try
+            {
+                Dto.User user = await _userServivce.GetUser(id);
+                return Ok(user);
+            }
+            catch (NoSuchEntityException exception)
+            {
+                return BadRequest(new Dto.Error(exception.Message, exception.GetType()));
+            }
         }
     }
 }

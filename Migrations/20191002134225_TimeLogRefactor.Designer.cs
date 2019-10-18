@@ -4,14 +4,16 @@ using IMS_Timetracker.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IMS_Timetracker.Migrations
 {
     [DbContext(typeof(TimetrackerDbContext))]
-    partial class TimetrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191002134225_TimeLogRefactor")]
+    partial class TimeLogRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +169,7 @@ namespace IMS_Timetracker.Migrations
 
                     b.Property<float>("Hours");
 
-                    b.Property<int>("ProjectUserRoleId");
+                    b.Property<int>("ProjectId");
 
                     b.Property<DateTime>("TimeEnd")
                         .HasColumnType("datetime");
@@ -175,9 +177,13 @@ namespace IMS_Timetracker.Migrations
                     b.Property<DateTime>("TimeStart")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectUserRoleId");
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TimeLogs");
                 });
@@ -251,9 +257,14 @@ namespace IMS_Timetracker.Migrations
 
             modelBuilder.Entity("IMS_Timetracker.Entities.TimeLogEntity", b =>
                 {
-                    b.HasOne("IMS_Timetracker.Entities.Privileges.ProjectUserRole", "ProjectUserRole")
+                    b.HasOne("IMS_Timetracker.Entities.ProjectEntity", "ProjectEntity")
                         .WithMany("TimeLogs")
-                        .HasForeignKey("ProjectUserRoleId")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IMS_Timetracker.Entities.UserEntity", "UserEntity")
+                        .WithMany("TimeLogs")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

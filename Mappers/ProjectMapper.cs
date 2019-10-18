@@ -2,7 +2,6 @@ using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Dto;
 using ProjectDto = IMS_Timetracker.Dto.Project;
-using ProjectEntity = IMS_Timetracker.Entities.Project;
 
 namespace IMS_Timetracker.Mappers
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IMS_Timetracker.Dto.Privileges;
 using Microsoft.EntityFrameworkCore;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Entities.Privileges;
@@ -13,50 +14,50 @@ namespace IMS_Timetracker.Context
     {
         public TimetrackerDbContext(DbContextOptions<TimetrackerDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserDetail> UserDetails { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<UserDetailEntity> UserDetails { get; set; }
+        public DbSet<ProjectEntity> Projects { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<ProjectUserRole> ProjectsUsersRoles { get; set; }
         public DbSet<RolePermission> RolesPermissions { get; set; }
-        public DbSet<TimeLog> TimeLogs { get; set; }
+        public DbSet<TimeLogEntity> TimeLogs { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.Id);
-            modelBuilder.Entity<UserDetail>().HasKey(ud => ud.Id);
-            modelBuilder.Entity<Project>().HasKey(p => p.Id);
+            modelBuilder.Entity<UserEntity>().HasKey(u => u.Id);
+            modelBuilder.Entity<UserDetailEntity>().HasKey(ud => ud.Id);
+            modelBuilder.Entity<ProjectEntity>().HasKey(p => p.Id);
             modelBuilder.Entity<Role>().HasKey(r => r.Id);
-            modelBuilder.Entity<ProjectUserRole>().HasKey(r => r.UserId);
+            modelBuilder.Entity<ProjectUserRole>().HasKey(r => r.Id);
             modelBuilder.Entity<RolePermission>().HasKey(r => r.Id);
-            modelBuilder.Entity<TimeLog>().HasKey(r => r.Id);
+            modelBuilder.Entity<TimeLogEntity>().HasKey(r => r.Id);
             
-            modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<UserDetail>().ToTable("UserDetails");
-            modelBuilder.Entity<Project>().ToTable("Projects");
+            modelBuilder.Entity<UserEntity>().ToTable("Users");
+            modelBuilder.Entity<UserDetailEntity>().ToTable("UserDetails");
+            modelBuilder.Entity<ProjectEntity>().ToTable("Projects");
             modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<ProjectUserRole>().ToTable("ProjectsUsersRoles");
             modelBuilder.Entity<RolePermission>().ToTable("RolesPermissions");
-            modelBuilder.Entity<TimeLog>().ToTable("TimeLogs");
+            modelBuilder.Entity<TimeLogEntity>().ToTable("TimeLogs");
             
-            modelBuilder.Entity<Project>()
-                .HasMany(a => a.TimeLogs)
-                .WithOne(at => at.Project)
-                .HasForeignKey(at => at.ProjectId); 
+//            modelBuilder.Entity<ProjectEntity>()
+//                .HasMany(a => a.TimeLogs)
+//                .WithOne(at => at.ProjectEntity)
+//                .HasForeignKey(at => at.ProjectId); 
+//            
+//            modelBuilder.Entity<UserEntity>()
+//                .HasMany(a => a.TimeLogs)
+//                .WithOne(at => at.UserEntity)
+//                .HasForeignKey(at => at.UserId); 
             
-            modelBuilder.Entity<User>()
-                .HasMany(a => a.TimeLogs)
-                .WithOne(at => at.User)
-                .HasForeignKey(at => at.UserId); 
-            
-            modelBuilder.Entity<Project>()
+            modelBuilder.Entity<ProjectEntity>()
                 .HasMany(a => a.ProjectsUsersRoles)
-                .WithOne(at => at.Project)
+                .WithOne(at => at.ProjectEntity)
                 .HasForeignKey(at => at.ProjectId);
             
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserEntity>()
                 .HasMany(t => t.ProjectsUsersRoles)
-                .WithOne(at => at.User)
+                .WithOne(at => at.UserEntity)
                 .HasForeignKey(t => t.UserId);
             
             modelBuilder.Entity<Role>()
@@ -68,6 +69,11 @@ namespace IMS_Timetracker.Context
                 .HasMany(t => t.RolesPermissions)
                 .WithOne(at => at.Role)
                 .HasForeignKey(t => t.RoleId);
+
+            modelBuilder.Entity<ProjectUserRole>()
+                .HasMany(t => t.TimeLogs)
+                .WithOne(at => at.ProjectUserRole)
+                .HasForeignKey(t => t.ProjectUserRoleId);
             
             SeedDatabase(modelBuilder);
             base.OnModelCreating(modelBuilder);
@@ -85,6 +91,71 @@ namespace IMS_Timetracker.Context
                     Name = "User",
                 }
             );
+            
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity {
+                    Id = 1,
+                    FirstName = "Vialik"
+                }
+            );            
+            
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity {
+                    Id = 2,
+                    FirstName = "Alex"
+                }
+            );
+            
+
+            modelBuilder.Entity<ProjectEntity>().HasData(
+                new ProjectEntity
+                {
+                    Id = 1,
+                    Title = "Project 1"
+                }
+            );
+            
+            modelBuilder.Entity<ProjectEntity>().HasData(
+                new ProjectEntity
+                {
+                    Id = 2,
+                    Title = "Project 2"
+                }
+            );
+            
+            modelBuilder.Entity<ProjectEntity>().HasData(
+                new ProjectEntity
+                {
+                    Id = 3,
+                    Title = "Project 3"
+                }
+            );
+
+            
+            modelBuilder.Entity<ProjectUserRole>().HasData(
+                new ProjectUserRole
+                {
+                    UserId = 2,
+                    ProjectId = 1,
+                    RoleId = 1,
+                    Id = 6
+                },
+                new ProjectUserRole
+                {
+                    UserId = 2,
+                    ProjectId = 2,
+                    RoleId = 1,
+                    Id = 7
+                },
+                new ProjectUserRole
+                {
+                    UserId = 2,
+                    ProjectId = 3,
+                    RoleId = 1,
+                    Id = 8
+                });            
+            
+
             
             modelBuilder.Entity<RolePermission>().HasData(
                 new RolePermission {

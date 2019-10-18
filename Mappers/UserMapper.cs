@@ -1,28 +1,27 @@
 using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Dto;
-using ProjectDto = IMS_Timetracker.Dto.Project;
-using ProjectEntity = IMS_Timetracker.Entities.Project;
+using UserDto = IMS_Timetracker.Dto.User;
 
 namespace IMS_Timetracker.Mappers
 {
-    public class ProjectMapper: IMapper<ProjectEntity, ProjectDto>
+    public class UserMapper: IMapper<UserEntity, UserDto>
     {
-        public ProjectEntity Map(ProjectDto source)
+        public UserEntity Map(UserDto source)
         {
-            return new ProjectEntity
+            return new UserEntity
             {
                 Id = source.Id,
-                Title = source.Title
+                FirstName = source.FirstName
             };
         }
 
-        public ProjectDto Map(ProjectEntity source)
+        public UserDto Map(UserEntity source)
         {
-            return new ProjectDto
+            return new UserDto
             {
                 Id = source.Id,
-                Title = source.Title
+                FirstName = source.FirstName
             };
         }
     }

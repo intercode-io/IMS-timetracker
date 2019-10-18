@@ -1,4 +1,4 @@
-﻿    
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IMS_Timetracker.Dto;
@@ -13,10 +13,10 @@ namespace IMS_Timetracker.Controllers
     
     public class TimeLogController : ControllerBase
     {
-        private readonly TimeLogService _timeLogService;
+        private readonly ITimeLogService _timeLogService;
 
         public TimeLogController(
-            TimeLogService timeLogFilterService)
+            ITimeLogService timeLogFilterService)
         {
             _timeLogService = timeLogFilterService;
         }
@@ -27,6 +27,14 @@ namespace IMS_Timetracker.Controllers
                 {
                     List<Dto.TimeLog> timeLogs = await _timeLogService.GetTimeLogList(timeLogFilterDto);
                     return Ok(timeLogs);
+                }
+                
+        [HttpPost("create")]
+                public async Task<ActionResult> AddTimeLog([FromBody] TimeLog timeLogDto)
+                {
+                   
+                    TimeLog timeLog = await _timeLogService.CreateTimeLog(timeLogDto);
+                    return Ok(timeLog);
                 }
     }
 }

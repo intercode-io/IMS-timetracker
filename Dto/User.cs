@@ -1,9 +1,9 @@
 namespace IMS_Timetracker.Dto
 {
-    public class Project
+    public class User
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         
-        public string Title { get; set; }
+        public string FirstName { get; set; }
     }
 }

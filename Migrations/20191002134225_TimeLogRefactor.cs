@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IMS_Timetracker.Migrations
 {
-    public partial class RemoveNullableFields : Migration
+    public partial class TimeLogRefactor : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,12 +41,14 @@ namespace IMS_Timetracker.Migrations
             migrationBuilder.AlterColumn<DateTime>(
                 name: "TimeStart",
                 table: "TimeLogs",
+                type: "datetime",
                 nullable: false,
                 oldClrType: typeof(byte));
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "TimeEnd",
                 table: "TimeLogs",
+                type: "datetime",
                 nullable: false,
                 oldClrType: typeof(byte));
 
@@ -125,13 +127,15 @@ namespace IMS_Timetracker.Migrations
                 name: "TimeStart",
                 table: "TimeLogs",
                 nullable: false,
-                oldClrType: typeof(DateTime));
+                oldClrType: typeof(DateTime),
+                oldType: "datetime");
 
             migrationBuilder.AlterColumn<byte>(
                 name: "TimeEnd",
                 table: "TimeLogs",
                 nullable: false,
-                oldClrType: typeof(DateTime));
+                oldClrType: typeof(DateTime),
+                oldType: "datetime");
 
             migrationBuilder.AlterColumn<int>(
                 name: "UserId",

@@ -48,8 +48,13 @@ namespace IMS_Timetracker
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
-            services.AddSingleton<IMapper<Entities.Project, Dto.Project>, ProjectMapper>();
+            services.AddSingleton<IMapper<Entities.UserEntity, Dto.User>, UserMapper>();
+            services.AddSingleton<IMapper<Entities.ProjectEntity, Dto.Project>, ProjectMapper>();
+            services.AddSingleton<IMapper<Entities.TimeLogEntity, Dto.TimeLog>, TiemLogMapper>();
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IUserServivce, UserServivce>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITimeLogService, TimeLogService>();
 
             services.AddDbContext<TimetrackerDbContext>(x => x.UseSqlServer(connection));
         }
