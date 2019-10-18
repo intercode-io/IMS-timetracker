@@ -6,6 +6,7 @@ using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Context;
 using IMS_Timetracker.Dto;
 using IMS_Timetracker.Entities;
+using IMS_Timetracker.Entities.Privileges;
 using IMS_Timetracker.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,7 +49,8 @@ namespace IMS_Timetracker.Services
         {
             var projectIdsFilter = timeLogFilter.ProjectIds.AsEnumerable();
             
-            Dictionary<int, int?> allIds = new Dictionary<int, int?>();
+//            Dictionary<int, int?> allIds = new Dictionary<int, int?>();
+            Dictionary<int, Tuple<int?, string>> allIds = new Dictionary<int, Tuple<int?, string>>();
 //            Dictionary<int, Dictionary<int?, string>> allIds = new Dictionary<int, Dictionary<int?, string>>();
             
 //            List<int> purIds = new List<int>();
@@ -63,30 +65,31 @@ namespace IMS_Timetracker.Services
             if (timeLogFilter.ProjectIds.Count() <= 0)
             {
                 allIds = await _context.ProjectsUsersRoles
+                    .Include( pur => pur.ProjectEntity)
                     .Where(p => p.UserId == timeLogFilter.UserId)
                     .Select(p => new
                     {
-                        item = p.Id,
-                        qty = p.ProjectId
+                        purId = p.Id,
+                        projects = Tuple.Create(p.ProjectId, p.ProjectEntity.Title)
                     })
-                    .ToDictionaryAsync(d => d.item, d => d.qty);
+                    .ToDictionaryAsync(d => d.purId, d => d.projects);
             }
             else
             {
                 allIds = await _context.ProjectsUsersRoles
+                    .Include( pur => pur.ProjectEntity)
                     .Where(p => p.UserId == timeLogFilter.UserId &&
                                 projectIdsFilter.Any(f => f == p.ProjectId))
                     .Select(p => new
                     {
-                        item = p.Id,  
-                        qty = p.ProjectId
+                        purId = p.Id,
+                        projects = Tuple.Create(p.ProjectId, p.ProjectEntity.Title)
                     })
-                    .ToDictionaryAsync(d => d.item, d => d.qty);
+                    .ToDictionaryAsync(d => d.purId, d => d.projects);
             }
 
 //            var projectIdsArray = purIds.AsEnumerable();
             var purIds = allIds.Keys.ToArray();
-            var projectIds = allIds.Values.ToArray();
 
             return await _context.TimeLogs
                 .Where(t => purIds.Contains(t.ProjectUserRoleId) && t.TimeStart >= timeLogFilter.DateFrom
@@ -96,13 +99,9 @@ namespace IMS_Timetracker.Services
                     {
                         Id = t.Id,
                         ProjectUserRoleId = t.ProjectUserRoleId,
-                        ProjectId = allIds[t.ProjectUserRoleId],
-                        ProjectTitle = "Project X",
+                        ProjectId = allIds[t.ProjectUserRoleId].Item1,
+                        ProjectTitle = allIds[t.ProjectUserRoleId].Item2,
                         
-//                        ProjectTitle = t.
-//                        ProjectId = t.ProjectId,
-//                        ProjectTitle = t.ProjectEntity.Title,
-//                        UserId = t.UserId,
                         Description = t.Description,
                         Hours = t.Hours,
                         TimeStart = t.TimeStart.ToString("g"),
