@@ -8,6 +8,7 @@ using IMS_Timetracker.Dto;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Entities.Privileges;
 using IMS_Timetracker.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IMS_Timetracker.Services
@@ -15,6 +16,8 @@ namespace IMS_Timetracker.Services
     public interface ITimeLogService
     {
         Task<TimeLog> CreateTimeLog(TimeLog timeLog);
+        Task<bool> RemoveTimeLog(int timeLogId);
+        Task<bool> UpdateTimeLog(TimeLog timeLog);
         Task<List<Dto.TimeLog>> GetTimeLogList(Dto.TimeLogFilter timeLogFilter);
     }
 
@@ -45,8 +48,56 @@ namespace IMS_Timetracker.Services
             }
         }
 
+        public async Task<bool> RemoveTimeLog(int timeLogId)
+        {
+            try
+            {
+//                TimeLogEntity timeLogEntity = _timeLogMapper.Map(timeLog);
+                _context.TimeLogs.Remove(_context.TimeLogs.Find(timeLogId));
+                await _context.SaveChangesAsync();
+                Console.WriteLine(timeLogId);
+                return true;
+//                return _timeLogMapper.Map(timeLogEntity);
+            }
+            catch (Exception exception)
+            {
+                throw new NotImplementedException();
+//                throw new CouldNotSaveException("Can't create new TimeLog.'", exception.Message);
+
+            }
+        }
+        
+        public async Task<bool> UpdateTimeLog(TimeLog timeLog)
+                {
+                    try
+                    {
+                        TimeLogEntity timeLogEntity = _context.TimeLogs.First(a => a.Id == timeLog.Id);
+
+                        if (timeLogEntity != null)
+                        {
+                            timeLogEntity.Description = timeLog.Description;
+                            timeLogEntity.Hours = timeLog.Hours;
+                            timeLogEntity.TimeStart = DateTime.Parse(timeLog.TimeStart, null, System.Globalization.DateTimeStyles.RoundtripKind);
+                            timeLogEntity.TimeEnd = DateTime.Parse(timeLog.TimeEnd, null, System.Globalization.DateTimeStyles.RoundtripKind);
+                            _context.TimeLogs.Update(timeLogEntity);
+                            await _context.SaveChangesAsync();
+                            return true;
+                        }
+
+                        return false;
+                    }
+                    catch (Exception exception)
+                    {
+                        throw new NotImplementedException();
+        //                throw new CouldNotSaveException("Can't create new TimeLog.'", exception.Message);
+        
+                    }
+                }
+
+        
         public async Task<List<TimeLog>> GetTimeLogList(TimeLogFilter timeLogFilter)
         {
+            int userId = 2;
             var projectIdsFilter = timeLogFilter.ProjectIds.AsEnumerable();
             
 //            Dictionary<int, int?> allIds = new Dictionary<int, int?>();
@@ -66,7 +117,7 @@ namespace IMS_Timetracker.Services
             {
                 allIds = await _context.ProjectsUsersRoles
                     .Include( pur => pur.ProjectEntity)
-                    .Where(p => p.UserId == timeLogFilter.UserId)
+                    .Where(p => p.UserId == userId)
                     .Select(p => new
                     {
                         purId = p.Id,
@@ -78,7 +129,7 @@ namespace IMS_Timetracker.Services
             {
                 allIds = await _context.ProjectsUsersRoles
                     .Include( pur => pur.ProjectEntity)
-                    .Where(p => p.UserId == timeLogFilter.UserId &&
+                    .Where(p => p.UserId == userId &&
                                 projectIdsFilter.Any(f => f == p.ProjectId))
                     .Select(p => new
                     {
@@ -92,13 +143,13 @@ namespace IMS_Timetracker.Services
             var purIds = allIds.Keys.ToArray();
 
             return await _context.TimeLogs
-                .Where(t => purIds.Contains(t.ProjectUserRoleId) && t.TimeStart >= timeLogFilter.DateFrom
-                                                                 && t.TimeStart <= timeLogFilter.DateTo)
+                .Where(t => purIds.Contains(t.ProjectUserRoleId) && t.TimeStart >= timeLogFilter.ActivityDateRangeFilter.DateFrom
+                                                                 && t.TimeStart <= timeLogFilter.ActivityDateRangeFilter.DateTo)
                 .Select(
                     t => new TimeLog
                     {
                         Id = t.Id,
-                        ProjectUserRoleId = t.ProjectUserRoleId,
+                        UserName = t.ProjectUserRole.UserEntity.FirstName,
                         ProjectId = allIds[t.ProjectUserRoleId].Item1,
                         ProjectTitle = allIds[t.ProjectUserRoleId].Item2,
                         

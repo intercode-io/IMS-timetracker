@@ -11,6 +11,9 @@ namespace IMS_Timetracker.Entities
         
         public int ProjectUserRoleId { get; set; }
         public ProjectUserRole ProjectUserRole { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime Date { get; set; }
+        public string Logs { get; set; }
         
 //        public int ProjectId { get; set; }
 //        public ProjectEntity ProjectEntity { get; set; }

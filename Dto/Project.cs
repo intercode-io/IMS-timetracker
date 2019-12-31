@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using IMS_Timetracker.Entities.Privileges;
+
 namespace IMS_Timetracker.Dto
 {
     public class Project
@@ -5,5 +8,7 @@ namespace IMS_Timetracker.Dto
         public int? Id { get; set; }
         
         public string Title { get; set; }
+        public ICollection<ProjectUserRole> ProjectsUsersRoles { get; set; }
+
     }
 }

@@ -35,9 +35,10 @@ namespace IMS_Timetracker.Controllers
         }
         
         // POST api/values
-        [HttpGet("getList/{userId}")]
-        public async Task<IActionResult> GetProjectList(int userId)
+        [HttpGet("getList")]
+        public async Task<IActionResult> GetProjectList()
         {
+            int userId = 2;
             List<Dto.Project> project = await _projectService.GetProjectList(userId);
             return Ok(project);
         }

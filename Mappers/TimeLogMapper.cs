@@ -29,7 +29,6 @@ namespace IMS_Timetracker.Mappers
             return new TimeLog
             {
                 Id = source.Id,
-                ProjectUserRoleId = source.ProjectUserRoleId,
                 Hours = source.Hours,
                 TimeStart = source.TimeStart.ToString("g"),
                 TimeEnd = source.TimeEnd.ToString("g")
