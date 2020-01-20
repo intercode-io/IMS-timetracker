@@ -34,6 +34,13 @@ namespace IMS_Timetracker.Controllers
             return Ok(project);
         }
         
+        [HttpPost("update")]
+        public async Task<ActionResult> UpdateProject([FromBody] Dto.Project project)
+        {
+            bool result = await _projectService.UpdateProject(project);
+            return Ok(result);
+        }
+        
         // POST api/values
         [HttpGet("getList")]
         public async Task<IActionResult> GetProjectList()

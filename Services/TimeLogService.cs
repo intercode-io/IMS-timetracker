@@ -76,9 +76,9 @@ namespace IMS_Timetracker.Services
                         if (timeLogEntity != null)
                         {
                             timeLogEntity.Description = timeLog.Description;
-                            timeLogEntity.Hours = timeLog.Hours;
-                            timeLogEntity.TimeStart = DateTime.Parse(timeLog.TimeStart, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                            timeLogEntity.TimeEnd = DateTime.Parse(timeLog.TimeEnd, null, System.Globalization.DateTimeStyles.RoundtripKind);
+                            timeLogEntity.Logs = timeLog.Logs;
+                            timeLogEntity.Date = DateTime.Parse(timeLog.Date, null, System.Globalization.DateTimeStyles.RoundtripKind);
+                            timeLogEntity.Duration = timeLog.Duration;
                             _context.TimeLogs.Update(timeLogEntity);
                             await _context.SaveChangesAsync();
                             return true;
@@ -143,8 +143,8 @@ namespace IMS_Timetracker.Services
             var purIds = allIds.Keys.ToArray();
 
             return await _context.TimeLogs
-                .Where(t => purIds.Contains(t.ProjectUserRoleId) && t.TimeStart >= timeLogFilter.ActivityDateRangeFilter.DateFrom
-                                                                 && t.TimeStart <= timeLogFilter.ActivityDateRangeFilter.DateTo)
+                .Where(t => purIds.Contains(t.ProjectUserRoleId) && t.Date >= timeLogFilter.ActivityDateRangeFilter.DateFrom
+                                                                 && t.Date <= timeLogFilter.ActivityDateRangeFilter.DateTo)
                 .Select(
                     t => new TimeLog
                     {
@@ -152,11 +152,11 @@ namespace IMS_Timetracker.Services
                         UserName = t.ProjectUserRole.UserEntity.FirstName,
                         ProjectId = allIds[t.ProjectUserRoleId].Item1,
                         ProjectTitle = allIds[t.ProjectUserRoleId].Item2,
-                        
+                        Duration = t.Duration,
                         Description = t.Description,
-                        Hours = t.Hours,
-                        TimeStart = t.TimeStart.ToString("g"),
-                        TimeEnd = t.TimeEnd.ToString("g")
+                        Logs = t.Logs,
+                        Date = t.Date.ToString("g"),
+                        Color =  t.ProjectUserRole.ProjectEntity.Color
                     })
                 .ToListAsync();
         }

@@ -15,12 +15,10 @@ namespace IMS_Timetracker.Mappers
                 Id = source.Id,
                 ProjectUserRoleId = source.ProjectUserRoleId,
                 Description = source.Description,
-                Hours = source.Hours,
-                
-                //TimeStart = DateTime.ParseExact(source.TimeStart, "yyyy-MM-dd HH:mm:ss",null),
-                //TimeEnd = DateTime.ParseExact(source.TimeEnd, "yyyy-MM-dd HH:mm:ss",null)
-                TimeStart = DateTime.Parse(source.TimeStart, null, System.Globalization.DateTimeStyles.RoundtripKind),
-                TimeEnd = DateTime.Parse(source.TimeEnd, null, System.Globalization.DateTimeStyles.RoundtripKind)
+                Logs = source.Logs,
+                Duration = source.Duration,
+                // Date = DateTimeOffset.Parse(source.Date).UtcDateTime
+                Date = DateTime.Parse(source.Date, null, System.Globalization.DateTimeStyles.RoundtripKind),
             };
         }
 
@@ -29,9 +27,9 @@ namespace IMS_Timetracker.Mappers
             return new TimeLog
             {
                 Id = source.Id,
-                Hours = source.Hours,
-                TimeStart = source.TimeStart.ToString("g"),
-                TimeEnd = source.TimeEnd.ToString("g")
+                Logs = source.Logs,
+                Date = source.Date.ToString("g"),
+                Duration = source.Duration
             };
         }
     }

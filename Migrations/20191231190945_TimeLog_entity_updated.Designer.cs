@@ -4,14 +4,16 @@ using IMS_Timetracker.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IMS_Timetracker.Migrations
 {
     [DbContext(typeof(TimetrackerDbContext))]
-    partial class TimetrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191231190945_TimeLog_entity_updated")]
+    partial class TimeLog_entity_updated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,8 +135,6 @@ namespace IMS_Timetracker.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Color");
-
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
@@ -169,8 +169,6 @@ namespace IMS_Timetracker.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("Description");
-
-                    b.Property<int>("Duration");
 
                     b.Property<string>("Logs");
 

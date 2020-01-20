@@ -13,6 +13,7 @@ namespace IMS_Timetracker.Mappers
             {
                 Id = source.Id,
                 Title = source.Title,
+                Color = source.Color,
             };
         }
 
@@ -22,6 +23,7 @@ namespace IMS_Timetracker.Mappers
             {
                 Id = source.Id,
                 Title = source.Title,
+                Color = source.Color,
             };
         }
     }
