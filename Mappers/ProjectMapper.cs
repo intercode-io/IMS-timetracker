@@ -12,7 +12,8 @@ namespace IMS_Timetracker.Mappers
             return new ProjectEntity
             {
                 Id = source.Id,
-                Title = source.Title
+                Title = source.Title,
+                Color = source.Color,
             };
         }
 
@@ -21,7 +22,8 @@ namespace IMS_Timetracker.Mappers
             return new ProjectDto
             {
                 Id = source.Id,
-                Title = source.Title
+                Title = source.Title,
+                Color = source.Color,
             };
         }
     }

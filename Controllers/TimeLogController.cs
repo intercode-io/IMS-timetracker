@@ -32,9 +32,25 @@ namespace IMS_Timetracker.Controllers
         [HttpPost("create")]
                 public async Task<ActionResult> AddTimeLog([FromBody] TimeLog timeLogDto)
                 {
-                   
+                    timeLogDto.ProjectUserRoleId=7;
                     TimeLog timeLog = await _timeLogService.CreateTimeLog(timeLogDto);
                     return Ok(timeLog);
                 }
+                
+        [HttpGet("remove/{timeLogId}")]
+                public async Task<IActionResult> RemoveTimeLog(int timeLogId)
+                {
+                    bool timeLog = await _timeLogService.RemoveTimeLog(timeLogId);
+                    return Ok(timeLog);
+                }
+                
+        
+        [HttpPost("update")]
+            public async Task<ActionResult> UpdateTimeLog([FromBody] TimeLog timeLog)
+            {
+                bool result = await _timeLogService.UpdateTimeLog(timeLog);
+                return Ok(result);
+            }
+                
     }
 }
