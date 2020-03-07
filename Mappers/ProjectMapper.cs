@@ -1,13 +1,12 @@
 using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Dto;
-using ProjectDto = IMS_Timetracker.Dto.Project;
 
 namespace IMS_Timetracker.Mappers
 {
-    public class ProjectMapper: IMapper<ProjectEntity, ProjectDto>
+    public class ProjectMapper : IMapper<ProjectEntity, Project>
     {
-        public ProjectEntity Map(ProjectDto source)
+        public ProjectEntity Map(Project source)
         {
             return new ProjectEntity
             {
@@ -17,9 +16,9 @@ namespace IMS_Timetracker.Mappers
             };
         }
 
-        public ProjectDto Map(ProjectEntity source)
+        public Project Map(ProjectEntity source)
         {
-            return new ProjectDto
+            return new Project
             {
                 Id = source.Id,
                 Title = source.Title,

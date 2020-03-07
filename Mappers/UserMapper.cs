@@ -1,13 +1,12 @@
 using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Entities;
 using IMS_Timetracker.Dto;
-using UserDto = IMS_Timetracker.Dto.User;
 
 namespace IMS_Timetracker.Mappers
 {
-    public class UserMapper: IMapper<UserEntity, UserDto>
+    public class UserMapper : IMapper<UserEntity, User>
     {
-        public UserEntity Map(UserDto source)
+        public UserEntity Map(User source)
         {
             return new UserEntity
             {
@@ -16,9 +15,9 @@ namespace IMS_Timetracker.Mappers
             };
         }
 
-        public UserDto Map(UserEntity source)
+        public User Map(UserEntity source)
         {
-            return new UserDto
+            return new User
             {
                 Id = source.Id,
                 FirstName = source.FirstName

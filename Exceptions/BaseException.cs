@@ -6,12 +6,12 @@ namespace IMS_Timetracker.Exceptions
     {
         public BaseException(string message) : base(message)
         {
-            
+
         }
-        
-        public BaseException(string message, string previousError) : base(message + "\nError: "+previousError)
+
+        public BaseException(string message, string previousError) : base(message + "\nError: " + previousError)
         {
-            
+
         }
     }
 }

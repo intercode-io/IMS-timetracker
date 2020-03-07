@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using IMS_Timetracker.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.StaticFiles;
 using System.IO;
-using IMS_Timetracker.Entities;
 using IMS_Timetracker.Dto;
 using IMS_Timetracker.Abstraction;
 using IMS_Timetracker.Mappers;
@@ -47,10 +38,10 @@ namespace IMS_Timetracker
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
-            services.AddSingleton<IMapper<Entities.UserEntity, Dto.User>, UserMapper>();
-            services.AddSingleton<IMapper<Entities.ProjectEntity, Dto.Project>, ProjectMapper>();
-            services.AddSingleton<IMapper<Entities.TimeLogEntity, Dto.TimeLog>, TiemLogMapper>();
+
+            services.AddSingleton<IMapper<Entities.UserEntity, User>, UserMapper>();
+            services.AddSingleton<IMapper<Entities.ProjectEntity, Project>, ProjectMapper>();
+            services.AddSingleton<IMapper<Entities.TimeLogEntity, TimeLog>, TiemLogMapper>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserServivce, UserServivce>();
             services.AddScoped<IRoleService, RoleService>();
@@ -73,7 +64,7 @@ namespace IMS_Timetracker
                     })
                     .AllowCredentials()
             );
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,7 +74,8 @@ namespace IMS_Timetracker
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.Use(async (context, next) => {
+            app.Use(async (context, next) =>
+            {
                 await next();
                 if (context.Response.StatusCode == 404 &&
                    !Path.HasExtension(context.Request.Path.Value) &&

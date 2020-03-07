@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using IMS_Timetracker.Context;
-using IMS_Timetracker.Exceptions;
 using IMS_Timetracker.Services;
+using IMS_Timetracker.Dto;
 
 namespace IMS_Timetracker.Controllers
 {
@@ -25,28 +21,29 @@ namespace IMS_Timetracker.Controllers
             _projectService = projectService;
             _roleService = roleService;
         }
-        
-        // POST api/values
+
         [HttpPost("create")]
-        public async Task<IActionResult> CreateProject([FromBody] Dto.Project projectDto)
+        public async Task<IActionResult> CreateProject([FromBody] Project projectDto)
         {
-            Dto.Project project = await _projectService.CreateProject(projectDto);
+            Project project = await _projectService.CreateProject(projectDto);
+
             return Ok(project);
         }
-        
+
         [HttpPost("update")]
-        public async Task<ActionResult> UpdateProject([FromBody] Dto.Project project)
+        public async Task<ActionResult> UpdateProject([FromBody] Project project)
         {
             bool result = await _projectService.UpdateProject(project);
+
             return Ok(result);
         }
-        
-        // POST api/values
+
         [HttpGet("getList")]
         public async Task<IActionResult> GetProjectList()
         {
             int userId = 2;
-            List<Dto.Project> project = await _projectService.GetProjectList(userId);
+            List<Project> project = await _projectService.GetProjectList(userId);
+
             return Ok(project);
         }
 
@@ -54,13 +51,8 @@ namespace IMS_Timetracker.Controllers
         public async Task<IActionResult> GetProjectUserPermissions(int projectId, int userId)
         {
             var res = await _roleService.GetProjectUserPermissions(projectId, userId);
+
             return Ok(res);
         }
-
-//        public async Task<IActionResult> GetProjectUserActivityList([FromBody] Dto.Activity.ProjectIdsActivityList projectIdsDto)
-//        {
-//            
-//            return Ok();
-//        }
     }
 }
