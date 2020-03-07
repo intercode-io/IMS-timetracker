@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace IMS_Timetracker
+namespace Timetracker.Web
 {
     public class Program
     {

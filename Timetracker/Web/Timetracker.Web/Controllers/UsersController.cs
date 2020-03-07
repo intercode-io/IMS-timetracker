@@ -1,23 +1,23 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using IMS_Timetracker.Exceptions;
-using IMS_Timetracker.Services;
-using IMS_Timetracker.Dto;
+using Timetracker.BLL.Exceptions;
+using Timetracker.BLL.Services.Interfaces;
+using Timetracker.Models.Data;
 
-namespace IMS_Timetracker.Controllers
+namespace Timetracker.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
 
-        private readonly UserServivce _userServivce;
+        private readonly IUserService _userService;
 
         public UsersController(
-            UserServivce userServivce
+            IUserService userServivce
         )
         {
-            _userServivce = userServivce;
+            _userService = userServivce;
         }
 
         [HttpGet("get/{id}")]
@@ -25,7 +25,7 @@ namespace IMS_Timetracker.Controllers
         {
             try
             {
-                User user = await _userServivce.GetUser(id);
+                UserModel user = await _userService.GetUser(id);
 
                 return Ok(user);
             }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using IMS_Timetracker.Dto;
-using IMS_Timetracker.Services;
+using Timetracker.BLL.Services.Interfaces;
+using Timetracker.Models.Data;
 
-namespace IMS_Timetracker.Controllers
+namespace Timetracker.Web.Controllers
 {
     [Route("api/timeLog")]
     [ApiController]
@@ -23,16 +23,16 @@ namespace IMS_Timetracker.Controllers
         [HttpPost("getList")]
         public async Task<ActionResult> GetTimeLog([FromBody] TimeLogFilter timeLogFilterDto)
         {
-            List<TimeLog> timeLogs = await _timeLogService.GetTimeLogList(timeLogFilterDto);
+            List<TimeLogModel> timeLogs = await _timeLogService.GetTimeLogList(timeLogFilterDto);
 
             return Ok(timeLogs);
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> AddTimeLog([FromBody] TimeLog timeLogDto)
+        public async Task<ActionResult> AddTimeLog([FromBody] TimeLogModel timeLogDto)
         {
             timeLogDto.ProjectUserRoleId = 7;
-            TimeLog timeLog = await _timeLogService.CreateTimeLog(timeLogDto);
+            TimeLogModel timeLog = await _timeLogService.CreateTimeLog(timeLogDto);
 
             return Ok(timeLog);
         }
@@ -47,7 +47,7 @@ namespace IMS_Timetracker.Controllers
 
 
         [HttpPost("update")]
-        public async Task<ActionResult> UpdateTimeLog([FromBody] TimeLog timeLog)
+        public async Task<ActionResult> UpdateTimeLog([FromBody] TimeLogModel timeLog)
         {
             bool result = await _timeLogService.UpdateTimeLog(timeLog);
 

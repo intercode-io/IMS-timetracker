@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using IMS_Timetracker.Services;
-using IMS_Timetracker.Dto;
+using Timetracker.BLL.Services.Interfaces;
+using Timetracker.Models.Data;
 
-namespace IMS_Timetracker.Controllers
+namespace Timetracker.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,15 +23,15 @@ namespace IMS_Timetracker.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateProject([FromBody] Project projectDto)
+        public async Task<IActionResult> CreateProject([FromBody] ProjectModel projectDto)
         {
-            Project project = await _projectService.CreateProject(projectDto);
+            ProjectModel project = await _projectService.CreateProject(projectDto);
 
             return Ok(project);
         }
 
         [HttpPost("update")]
-        public async Task<ActionResult> UpdateProject([FromBody] Project project)
+        public async Task<ActionResult> UpdateProject([FromBody] ProjectModel project)
         {
             bool result = await _projectService.UpdateProject(project);
 
@@ -42,7 +42,7 @@ namespace IMS_Timetracker.Controllers
         public async Task<IActionResult> GetProjectList()
         {
             int userId = 2;
-            List<Project> project = await _projectService.GetProjectList(userId);
+            List<ProjectModel> project = await _projectService.GetProjectList(userId);
 
             return Ok(project);
         }

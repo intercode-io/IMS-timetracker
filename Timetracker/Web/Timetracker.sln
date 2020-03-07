@@ -3,7 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetracker.Web", "Timetracker.Web\Timetracker.Web.csproj", "{5D783F38-A7AE-4D17-A23C-85DE2F07C468}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timetracker.Web", "Timetracker.Web\Timetracker.Web.csproj", "{5D783F38-A7AE-4D17-A23C-85DE2F07C468}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8} = {5119EEBF-78DB-4E77-8881-2AEF881E32D8}
+		{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB} = {C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetracker.DAL", "Timetracker.DAL\Timetracker.DAL.csproj", "{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8} = {5119EEBF-78DB-4E77-8881-2AEF881E32D8}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetracker.BLL", "Timetracker.BLL\Timetracker.BLL.csproj", "{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7} = {8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8} = {5119EEBF-78DB-4E77-8881-2AEF881E32D8}
+		{419CEEF2-89C9-4E37-BD96-50F0049B2825} = {419CEEF2-89C9-4E37-BD96-50F0049B2825}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetracker.Entities", "Timetracker.Entities\Timetracker.Entities.csproj", "{5119EEBF-78DB-4E77-8881-2AEF881E32D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetracker.Models", "Timetracker.Models\Timetracker.Models.csproj", "{419CEEF2-89C9-4E37-BD96-50F0049B2825}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8} = {5119EEBF-78DB-4E77-8881-2AEF881E32D8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +38,22 @@ Global
 		{5D783F38-A7AE-4D17-A23C-85DE2F07C468}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D783F38-A7AE-4D17-A23C-85DE2F07C468}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D783F38-A7AE-4D17-A23C-85DE2F07C468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D911510-C0B7-4CD6-A1EE-4FC60E5ECFB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1946DCF-D6D4-4DBB-8BCA-98155008A9CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5119EEBF-78DB-4E77-8881-2AEF881E32D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{419CEEF2-89C9-4E37-BD96-50F0049B2825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{419CEEF2-89C9-4E37-BD96-50F0049B2825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{419CEEF2-89C9-4E37-BD96-50F0049B2825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{419CEEF2-89C9-4E37-BD96-50F0049B2825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

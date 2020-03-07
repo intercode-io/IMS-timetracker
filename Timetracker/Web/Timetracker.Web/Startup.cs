@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using IMS_Timetracker.Context;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
-using IMS_Timetracker.Dto;
-using IMS_Timetracker.Abstraction;
-using IMS_Timetracker.Mappers;
-using IMS_Timetracker.Services;
+using Timetracker.BLL.Mappers.Implementations;
+using Timetracker.BLL.Services.Interfaces;
+using Timetracker.BLL.Services.Implementations;
+using Timetracker.DAL.Context;
+using Timetracker.Entities.Data;
+using Timetracker.Models.Data;
+using Timetracker.BLL.Mappers.Interfaces;
 
-namespace IMS_Timetracker
+namespace Timetracker.Web
 {
     public class Startup
     {
@@ -39,11 +41,11 @@ namespace IMS_Timetracker
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<IMapper<Entities.UserEntity, User>, UserMapper>();
-            services.AddSingleton<IMapper<Entities.ProjectEntity, Project>, ProjectMapper>();
-            services.AddSingleton<IMapper<Entities.TimeLogEntity, TimeLog>, TiemLogMapper>();
+            services.AddSingleton<IMapper<UserEntity, UserModel>, UserMapper>();
+            services.AddSingleton<IMapper<ProjectEntity, ProjectModel>, ProjectMapper>();
+            services.AddSingleton<IMapper<TimeLogEntity, TimeLogModel>, TimeLogMapper>();
             services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<IUserServivce, UserServivce>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ITimeLogService, TimeLogService>();
 
