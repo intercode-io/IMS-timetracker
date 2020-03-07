@@ -6,6 +6,7 @@
     <RootNamespace>IMS_Timetracker</RootNamespace>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <SpaRoot>..\IMS-client\</SpaRoot>
+    <AssemblyName>Timetracker.Web</AssemblyName>
   </PropertyGroup>
   
   <ItemGroup>
