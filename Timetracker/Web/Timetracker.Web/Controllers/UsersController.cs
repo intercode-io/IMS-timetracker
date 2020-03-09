@@ -25,9 +25,9 @@ namespace Timetracker.Web.Controllers
         {
             try
             {
-                UserModel user = await _userService.GetUser(id);
+                var result = await _userService.GetUser(id);
 
-                return Ok(user);
+                return Ok(result);
             }
             catch (NoSuchEntityException exception)
             {

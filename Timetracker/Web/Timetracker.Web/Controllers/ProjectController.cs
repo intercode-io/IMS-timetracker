@@ -22,22 +22,6 @@ namespace Timetracker.Web.Controllers
             _roleService = roleService;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateProject([FromBody] ProjectModel projectDto)
-        {
-            ProjectModel project = await _projectService.CreateProject(projectDto);
-
-            return Ok(project);
-        }
-
-        [HttpPost("update")]
-        public async Task<ActionResult> UpdateProject([FromBody] ProjectModel project)
-        {
-            bool result = await _projectService.UpdateProject(project);
-
-            return Ok(result);
-        }
-
         [HttpGet("getList")]
         public async Task<IActionResult> GetProjectList()
         {
@@ -47,12 +31,28 @@ namespace Timetracker.Web.Controllers
             return Ok(project);
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateProject([FromBody] ProjectModel projectModel)
+        {
+            var result = await _projectService.CreateProject(projectModel);
+
+            return Ok(result);
+        }
+
+        [HttpPut("update")]
+        public async Task<ActionResult> UpdateProject([FromBody] ProjectModel projectModel)
+        {
+            var result = await _projectService.UpdateProject(projectModel);
+
+            return Ok(result);
+        }
+
         [HttpGet("getPermissions/projectId={projectId}&userId={userId}")]
         public async Task<IActionResult> GetProjectUserPermissions(int projectId, int userId)
         {
-            var res = await _roleService.GetProjectUserPermissions(projectId, userId);
+            var result = await _roleService.GetProjectUserPermissions(projectId, userId);
 
-            return Ok(res);
+            return Ok(result);
         }
     }
 }

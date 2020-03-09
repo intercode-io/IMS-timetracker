@@ -21,35 +21,35 @@ namespace Timetracker.Web.Controllers
 
 
         [HttpPost("getList")]
-        public async Task<ActionResult> GetTimeLog([FromBody] TimeLogFilter timeLogFilterDto)
+        public async Task<ActionResult> GetTimeLog([FromBody] TimeLogFilter timeLogFilter)
         {
-            List<TimeLogModel> timeLogs = await _timeLogService.GetTimeLogList(timeLogFilterDto);
+            var result = await _timeLogService.GetTimeLogList(timeLogFilter);
 
-            return Ok(timeLogs);
+            return Ok(result);
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> AddTimeLog([FromBody] TimeLogModel timeLogDto)
+        public async Task<ActionResult> AddTimeLog([FromBody] TimeLogModel timeLogModel)
         {
-            timeLogDto.ProjectUserRoleId = 7;
-            TimeLogModel timeLog = await _timeLogService.CreateTimeLog(timeLogDto);
+            timeLogModel.ProjectUserRoleId = 7;
+            var result = await _timeLogService.CreateTimeLog(timeLogModel);
 
-            return Ok(timeLog);
-        }
-
-        [HttpGet("remove/{timeLogId}")]
-        public async Task<IActionResult> RemoveTimeLog(int timeLogId)
-        {
-            bool timeLog = await _timeLogService.RemoveTimeLog(timeLogId);
-
-            return Ok(timeLog);
+            return Ok(result);
         }
 
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<ActionResult> UpdateTimeLog([FromBody] TimeLogModel timeLog)
         {
-            bool result = await _timeLogService.UpdateTimeLog(timeLog);
+            var result = await _timeLogService.UpdateTimeLog(timeLog);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("remove/{timeLogId}")]
+        public async Task<IActionResult> RemoveTimeLog(int timeLogId)
+        {
+            var result = await _timeLogService.RemoveTimeLog(timeLogId);
 
             return Ok(result);
         }
