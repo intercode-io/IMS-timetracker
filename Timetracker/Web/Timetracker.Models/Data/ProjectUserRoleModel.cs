@@ -3,7 +3,7 @@ using Timetracker.Entities.Constants;
 
 namespace Timetracker.Models.Data
 {
-    public class ProjectUserPermissions
+    public class ProjectUserRoleModel
     {
         public int ProjectId { get; set; }
 
