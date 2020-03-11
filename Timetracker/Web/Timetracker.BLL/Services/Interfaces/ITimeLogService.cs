@@ -10,7 +10,7 @@ namespace Timetracker.BLL.Services.Interfaces
 
         Task<bool> RemoveTimeLog(int timeLogId);
 
-        Task<bool> UpdateTimeLog(TimeLogModel timeLog);
+        Task<TimeLogModel> UpdateTimeLog(TimeLogModel timeLog);
 
         Task<List<TimeLogModel>> GetTimeLogList(TimeLogFilter timeLogFilter);
     }

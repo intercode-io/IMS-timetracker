@@ -31,7 +31,6 @@ namespace Timetracker.Web.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> AddTimeLog([FromBody] TimeLogModel timeLogModel)
         {
-            timeLogModel.ProjectUserRoleId = 7;
             var result = await _timeLogService.CreateTimeLog(timeLogModel);
 
             return Ok(result);

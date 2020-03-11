@@ -25,9 +25,15 @@ namespace Timetracker.BLL.Mappers.Implementations
             return new TimeLogModel
             {
                 Id = source.Id,
+                ProjectUserRoleId = source.ProjectUserRoleId,
+                Color = source.ProjectUserRoleEntity?.ProjectEntity?.Color,
+                ProjectId = source.ProjectUserRoleEntity?.ProjectId,
+                ProjectTitle = source.ProjectUserRoleEntity?.ProjectEntity?.Title,
+                UserName = source.ProjectUserRoleEntity?.UserEntity?.FirstName,
+                Description = source.Description,
                 Logs = source.Logs,
+                Duration = source.Duration,
                 Date = source.Date.ToString("g"),
-                Duration = source.Duration
             };
         }
     }

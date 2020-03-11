@@ -22,27 +22,8 @@ namespace Timetracker.BLL.Services.Implementations
 
         public async Task<ProjectUserRoleModel> GetProjectUserPermissions(int projectId, int userId)
         {
-            var perms = _context.ProjectsUsersRoles
-                .Where(x => x.ProjectId == projectId && x.UserId == userId)
-                .Include(x => x.Role)
-                .ThenInclude(x => x.RolesPermissions)
-                .Select(x => x.Role.RolesPermissions)
-                .ToList()
-                .FirstOrDefault();
-
-            if (perms == null)
-            {
-                throw new NoSuchEntityException(String.Format("Can't get User's (userId = %s) permission for project (projectId = %s).", userId, projectId));
-            }
-
-            ProjectUserRoleModel projectUserRoleModel = new ProjectUserRoleModel
-            {
-                ProjectId = projectId,
-                UserId = userId,
-                Permissions = perms.ToList().Select(p => p.Permission).ToList()
-            };
-
-            return projectUserRoleModel;
+            //TODO: Implement later
+            throw new NotImplementedException();
         }
     }
 }

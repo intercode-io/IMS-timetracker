@@ -15,7 +15,7 @@ namespace Timetracker.DAL.Configurations
 
             builder.HasKey(r => r.Id);
             builder.HasMany(t => t.TimeLogs)
-                .WithOne(at => at.ProjectUserRole)
+                .WithOne(at => at.ProjectUserRoleEntity)
                 .HasForeignKey(t => t.ProjectUserRoleId);
         }
     }

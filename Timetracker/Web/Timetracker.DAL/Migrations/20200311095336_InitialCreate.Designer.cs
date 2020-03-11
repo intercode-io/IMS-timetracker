@@ -10,8 +10,8 @@ using Timetracker.DAL.Context;
 namespace Timetracker.DAL.Migrations
 {
     [DbContext(typeof(TimetrackerDbContext))]
-    [Migration("20200307164954_InitialDatabaseCreate")]
-    partial class InitialDatabaseCreate
+    [Migration("20200311095336_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

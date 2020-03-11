@@ -9,7 +9,7 @@ namespace Timetracker.Entities.Data
 
         public int ProjectUserRoleId { get; set; }
 
-        public ProjectUserRoleEntity ProjectUserRole { get; set; }
+        public ProjectUserRoleEntity ProjectUserRoleEntity { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime Date { get; set; }

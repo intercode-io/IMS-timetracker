@@ -8,8 +8,10 @@ namespace Timetracker.BLL.Services.Interfaces
     {
         Task<ProjectModel> CreateProject(ProjectModel project);
 
-        Task<List<ProjectModel>> GetProjectList(int userId);
+        Task<List<ProjectUserRoleModel>> GetProjectUserRoleList(int userId);
 
-        Task<bool> UpdateProject(ProjectModel project);
+        Task<ProjectModel> UpdateProject(ProjectModel project);
+
+        Task<bool> RemoveProject(int projectId);
     }
 }

@@ -44,6 +44,7 @@ namespace Timetracker.Web
             services.AddSingleton<IMapper<UserEntity, UserModel>, UserMapper>();
             services.AddSingleton<IMapper<ProjectEntity, ProjectModel>, ProjectMapper>();
             services.AddSingleton<IMapper<TimeLogEntity, TimeLogModel>, TimeLogMapper>();
+            services.AddSingleton<IMapper<ProjectUserRoleEntity, ProjectUserRoleModel>, ProjectUserRoleMapper>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();

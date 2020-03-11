@@ -23,12 +23,12 @@ namespace Timetracker.Web.Controllers
         }
 
         [HttpGet("getList")]
-        public async Task<IActionResult> GetProjectList()
+        public async Task<IActionResult> GetProjectUserRoleList()
         {
             int userId = 2;
-            List<ProjectModel> project = await _projectService.GetProjectList(userId);
+            var result = await _projectService.GetProjectUserRoleList(userId);
 
-            return Ok(project);
+            return Ok(result);
         }
 
         [HttpPost("create")]
@@ -47,10 +47,10 @@ namespace Timetracker.Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet("getPermissions/projectId={projectId}&userId={userId}")]
-        public async Task<IActionResult> GetProjectUserPermissions(int projectId, int userId)
+        [HttpDelete("remove/{projectId}")]
+        public async Task<ActionResult> RemoveProject(int projectId)
         {
-            var result = await _roleService.GetProjectUserPermissions(projectId, userId);
+            var result = await _projectService.RemoveProject(projectId);
 
             return Ok(result);
         }

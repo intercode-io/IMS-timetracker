@@ -16,40 +16,53 @@ namespace Timetracker.BLL.Services.Implementations
     {
         private readonly TimetrackerDbContext _context;
         private readonly IMapper<ProjectEntity, ProjectModel> _projectMapper;
+        private readonly IMapper<ProjectUserRoleEntity, ProjectUserRoleModel> _projectUserRoleMapper;
 
         public ProjectService(
             TimetrackerDbContext context,
-            IMapper<ProjectEntity, ProjectModel> projectMapper
+            IMapper<ProjectEntity, ProjectModel> projectMapper,
+            IMapper<ProjectUserRoleEntity, ProjectUserRoleModel> projectUserRoleMapper
         )
         {
             _context = context;
             _projectMapper = projectMapper;
+            _projectUserRoleMapper = projectUserRoleMapper;
         }
 
-        public async Task<ProjectModel> CreateProject(ProjectModel project)
+        public async Task<List<ProjectUserRoleModel>> GetProjectUserRoleList(int userId)
+        {
+            var projectUserRoleList = await _context.ProjectsUsersRoles
+                    .Include(pur => pur.ProjectEntity)
+                    .Include(pur => pur.Role)
+                    .Include(pur => pur.UserEntity)
+                    .Where(pur => pur.UserId == userId)
+                    .Select(pur => _projectUserRoleMapper.Map(pur))
+                    .ToListAsync();
+
+            return projectUserRoleList;
+        }
+
+        public async Task<ProjectModel> CreateProject(ProjectModel projectModel)
         {
             try
             {
-                ProjectEntity projectEntityEntity = _projectMapper.Map(project);
-                var projectDb = await _context.Projects.AddAsync(projectEntityEntity);
-                await _context.SaveChangesAsync();
+                var projectEntity = _projectMapper.Map(projectModel);
 
-                if (projectEntityEntity.ProjectsUsersRoles == null)
+                if (projectEntity.ProjectsUsersRoles == null)
                 {
-                    projectEntityEntity.ProjectsUsersRoles = new List<ProjectUserRoleEntity>();
+                    projectEntity.ProjectsUsersRoles = new List<ProjectUserRoleEntity>();
+                    projectEntity.ProjectsUsersRoles.Add(new ProjectUserRoleEntity
+                    {
+                        ProjectId = projectEntity.Id,
+                        RoleId = 1,
+                        UserId = 2
+                    });
                 }
 
-                projectEntityEntity.ProjectsUsersRoles.Add(new ProjectUserRoleEntity
-                {
-                    ProjectId = projectEntityEntity.Id,
-                    RoleId = 1,
-                    UserId = 2
-                });
-
-                _context.Projects.Update(projectEntityEntity);
+                await _context.Projects.AddAsync(projectEntity);
                 await _context.SaveChangesAsync();
 
-                return _projectMapper.Map(projectEntityEntity);
+                return _projectMapper.Map(projectEntity);
             }
             catch (Exception exception)
             {
@@ -57,41 +70,43 @@ namespace Timetracker.BLL.Services.Implementations
             }
         }
 
-        public async Task<bool> UpdateProject(ProjectModel project)
+        public async Task<ProjectModel> UpdateProject(ProjectModel project)
         {
-            try
-            {
-                ProjectEntity projectEntity = _context.Projects.First(a => a.Id == project.Id);
+            var projectEntity = await _context.Projects.FirstOrDefaultAsync(a => a.Id == project.Id);
 
-                if (projectEntity != null && project != null)
-                {
-                    projectEntity.Title = project.Title;
-                    projectEntity.Color = project.Color;
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception exception)
+            if (projectEntity == null)
             {
-                throw new NotImplementedException();
+                throw new NoSuchEntityException("The entity does not exist");
             }
+
+            if (project != null)
+            {
+                projectEntity.Title = project.Title;
+                projectEntity.Color = project.Color;
+
+                _context.Projects.Update(projectEntity);
+                await _context.SaveChangesAsync();
+            }
+
+            return project;
         }
 
-        public async Task<List<ProjectModel>> GetProjectList(int userId)
+        public async Task<bool> RemoveProject(int projectId)
         {
-            List<ProjectModel> projectList = await _context.Projects
-                .Include(pur => pur.ProjectsUsersRoles)
-                .Where(purs => purs.ProjectsUsersRoles.Any(att => att.UserId == userId))
-                .Select(p => new ProjectModel
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Color = p.Color
-                }).ToListAsync();
+            var projectEntityToRemove = await _context.Projects
+                    .Include(p => p.ProjectsUsersRoles)
+                    .FirstOrDefaultAsync(p => p.Id == projectId);
 
-            return projectList;
+            if (projectEntityToRemove == null)
+            {
+                throw new NoSuchEntityException("The entity does not exist");
+            }
+
+            _context.Projects.Remove(projectEntityToRemove);
+            _context.ProjectsUsersRoles.RemoveRange(projectEntityToRemove.ProjectsUsersRoles);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Timetracker.DAL.Configurations
             builder.ToTable("Projects");
 
             builder.HasKey(p => p.Id);
-            builder.HasMany(a => a.ProjectsUsersRoles)
+            builder.HasMany(a => a.ProjectsUsersRoles)      //TODO: modify relations building
                 .WithOne(at => at.ProjectEntity)
                 .HasForeignKey(at => at.ProjectId);
         }
