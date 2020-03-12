@@ -88,15 +88,24 @@ namespace Timetracker.BLL.Services.Implementations
         {
             int userId = 2;
 
-            //TODO: implement filter logic
-            return await _context.TimeLogs
+            var projectsFilter = timeLogFilter.ProjectIds;
+            var timeFilter = timeLogFilter.ActivityDateRangeFilter;
+
+            var timeLogs = await _context.TimeLogs
                                 .Include(tl => tl.ProjectUserRoleEntity)
                                     .ThenInclude(pur => pur.ProjectEntity)
                                 .Include(tl => tl.ProjectUserRoleEntity)
                                     .ThenInclude(pur => pur.UserEntity)
-                                .Where(tl => tl.ProjectUserRoleEntity.UserId == userId)
+                                .Where(tl => tl.ProjectUserRoleEntity.UserId == userId && tl.Date >= timeFilter.DateFrom && tl.Date <= timeFilter.DateTo)
                                 .Select(tl => _timeLogMapper.Map(tl))
                                 .ToListAsync();
+
+            if (projectsFilter.Count > 0)
+            {
+                timeLogs = timeLogs.Where(tl => projectsFilter.Contains((int) tl.ProjectId)).ToList();
+            }
+
+            return timeLogs;
         }
     }
 }
