@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Timetracker.DAL\Timetracker.DAL.csproj" />
+    <ProjectReference Include="..\Timetracker.Entities\Timetracker.Entities.csproj" />
+    <ProjectReference Include="..\Timetracker.Models\Timetracker.Models.csproj" />
+  </ItemGroup>
+
+</Project>
