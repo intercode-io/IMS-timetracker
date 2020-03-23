@@ -12,11 +12,12 @@ namespace Timetracker.BLL.Mappers.Implementations
             return new TimeLogEntity()
             {
                 Id = source.Id,
-                ProjectUserRoleId = source.ProjectUserRoleId,
+                ProjectId = source.ProjectId,
+                UserId = source.UserId,
                 Description = source.Description,
                 Logs = source.Logs,
                 Duration = source.Duration,
-                Date = DateTime.Parse(source.Date, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                Date = source.Date
             };
         }
 
@@ -25,15 +26,15 @@ namespace Timetracker.BLL.Mappers.Implementations
             return new TimeLogModel
             {
                 Id = source.Id,
-                ProjectUserRoleId = source.ProjectUserRoleId,
-                Color = source.ProjectUserRoleEntity?.ProjectEntity?.Color,
-                ProjectId = source.ProjectUserRoleEntity?.ProjectId,
-                ProjectTitle = source.ProjectUserRoleEntity?.ProjectEntity?.Title,
-                UserName = source.ProjectUserRoleEntity?.UserEntity?.FirstName,
+                Color = source.Project?.Color,
+                ProjectId = source.ProjectId,
+                ProjectTitle = source.Project?.Title,
+                UserId = source.UserId,
+                UserName = source.User?.FirstName,
                 Description = source.Description,
                 Logs = source.Logs,
                 Duration = source.Duration,
-                Date = source.Date.ToString("g"),
+                Date = source.Date,
             };
         }
     }

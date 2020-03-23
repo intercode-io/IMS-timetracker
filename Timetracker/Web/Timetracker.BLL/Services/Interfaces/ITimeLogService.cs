@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Timetracker.Models.Data;
 
@@ -12,6 +13,6 @@ namespace Timetracker.BLL.Services.Interfaces
 
         Task<TimeLogModel> UpdateTimeLog(TimeLogModel timeLog);
 
-        Task<List<TimeLogModel>> GetTimeLogList(TimeLogFilter timeLogFilter);
+        Task<List<TimeLogModel>> GetTimeLogList(TimeLogFilter timeLogFilter, ClaimsPrincipal user);
     }
 }

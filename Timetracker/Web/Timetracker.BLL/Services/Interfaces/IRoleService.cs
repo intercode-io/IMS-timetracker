@@ -5,6 +5,5 @@ namespace Timetracker.BLL.Services.Interfaces
 {
     public interface IRoleService
     {
-        Task<ProjectUserRoleModel> GetProjectUserPermissions(int projectId, int userId);
     }
 }

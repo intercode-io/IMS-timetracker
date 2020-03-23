@@ -1,18 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Timetracker.BLL.Services.Interfaces;
 using Timetracker.Models.Data;
 
 namespace Timetracker.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
-
         private readonly IRoleService _roleService;
+
         public ProjectController(
             IProjectService projectService,
             IRoleService roleService
@@ -23,10 +25,9 @@ namespace Timetracker.Web.Controllers
         }
 
         [HttpGet("getList")]
-        public async Task<IActionResult> GetProjectUserRoleList()
+        public async Task<IActionResult> GetProjects()
         {
-            int userId = 2;
-            var result = await _projectService.GetProjectUserRoleList(userId);
+            var result = await _projectService.GetProjects(User);
 
             return Ok(result);
         }
@@ -34,7 +35,7 @@ namespace Timetracker.Web.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] ProjectModel projectModel)
         {
-            var result = await _projectService.CreateProject(projectModel);
+            var result = await _projectService.CreateProject(projectModel, User);
 
             return Ok(result);
         }

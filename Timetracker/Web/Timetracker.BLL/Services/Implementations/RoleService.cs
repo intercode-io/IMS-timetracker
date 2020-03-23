@@ -19,11 +19,5 @@ namespace Timetracker.BLL.Services.Implementations
         {
             _context = context;
         }
-
-        public async Task<ProjectUserRoleModel> GetProjectUserPermissions(int projectId, int userId)
-        {
-            //TODO: Implement later
-            throw new NotImplementedException();
-        }
     }
 }

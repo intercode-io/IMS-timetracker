@@ -1,19 +1,18 @@
+using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Timetracker.Entities.Data
 {
-    public class UserEntity
+    public class UserEntity : IdentityUser<int>
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
-        //TODO add relationships public UserDetail UserDetail { get; set; }
+        public string LastName { get; set; }
 
-        [Timestamp]
-        public byte[] Timestamp { get; set; }
+        public string PhotoUrl { get; set; }
 
-        public ICollection<ProjectUserRoleEntity> ProjectsUsersRoles { get; set; }
+        public ICollection<UserProjectsEntity> UserProjects { get; set; }
+
+        public ICollection<TimeLogEntity> TimeLogs { get; set; }
     }
 }

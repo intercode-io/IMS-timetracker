@@ -12,6 +12,10 @@ using Timetracker.DAL.Context;
 using Timetracker.Entities.Data;
 using Timetracker.Models.Data;
 using Timetracker.BLL.Mappers.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Timetracker.BLL.Configuration;
 
 namespace Timetracker.Web
 {
@@ -37,26 +41,47 @@ namespace Timetracker.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<TimetrackerDbContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<UserEntity, RoleEntity>()
+                .AddEntityFrameworkStores<TimetrackerDbContext>();
+
+            services.AddCors();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                    .AddJwtBearer(jwtOptions =>
+                    {
+                        jwtOptions.RequireHttpsMetadata = false;
+                        jwtOptions.SaveToken = true;
+                        jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("JwtSettings")["Secret"])),
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                    });
 
             services.AddSingleton<IMapper<UserEntity, UserModel>, UserMapper>();
             services.AddSingleton<IMapper<ProjectEntity, ProjectModel>, ProjectMapper>();
             services.AddSingleton<IMapper<TimeLogEntity, TimeLogModel>, TimeLogMapper>();
-            services.AddSingleton<IMapper<ProjectUserRoleEntity, ProjectUserRoleModel>, ProjectUserRoleMapper>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ITimeLogService, TimeLogService>();
-
-            services.AddDbContext<TimetrackerDbContext>(x => x.UseSqlServer(connection));
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // global cors policy
             app.UseCors(builder =>
                 builder.AllowAnyHeader()
                     .AllowAnyMethod()
@@ -94,6 +119,7 @@ namespace Timetracker.Web
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
