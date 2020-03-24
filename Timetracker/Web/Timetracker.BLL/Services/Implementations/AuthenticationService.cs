@@ -23,6 +23,7 @@ namespace Timetracker.BLL.Services.Implementations
         private readonly UserManager<UserEntity> _userManager;
         private readonly SignInManager<UserEntity> _signInManager;
 
+        private readonly AppSettings _appSettings;
         private readonly JwtSettings _jwtSettings;
 
         private readonly IMapper<UserEntity, UserModel> _userMapper;
@@ -30,12 +31,14 @@ namespace Timetracker.BLL.Services.Implementations
         public AuthenticationService(
             UserManager<UserEntity> userManager,
             SignInManager<UserEntity> signInManager,
+            IOptions<AppSettings> appSettings,
             IOptions<JwtSettings> jwtSettings,
             IMapper<UserEntity, UserModel> userMapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
 
+            _appSettings = appSettings.Value;
             _jwtSettings = jwtSettings.Value;
 
             _userMapper = userMapper;
@@ -45,7 +48,7 @@ namespace Timetracker.BLL.Services.Implementations
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken, new GoogleJsonWebSignature.ValidationSettings());
 
-            if (payload.HostedDomain != "intercode.io")
+            if (payload.HostedDomain != _appSettings.AllowedGoogleEmailDomain)
             {
                 throw new UnsupportedDomainException("The domain provided for authentication is not supported");
             }

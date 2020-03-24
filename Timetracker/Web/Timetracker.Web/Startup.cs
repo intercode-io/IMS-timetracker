@@ -49,7 +49,8 @@ namespace Timetracker.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));            
 
             services.AddAuthentication(options =>
             {
