@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Timetracker.Entities.Data;
 
@@ -14,9 +11,6 @@ namespace Timetracker.DAL.Configurations
             builder.ToTable("Roles");
 
             builder.HasKey(r => r.Id);
-            builder.HasMany(t => t.ProjectsUsersRoles)
-                .WithOne(at => at.Role)
-                .HasForeignKey(t => t.RoleId);
 
             builder.HasMany(t => t.RolesPermissions)
                 .WithOne(at => at.Role)

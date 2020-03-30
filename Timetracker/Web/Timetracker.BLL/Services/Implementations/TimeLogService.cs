@@ -9,6 +9,8 @@ using Timetracker.BLL.Mappers.Interfaces;
 using Timetracker.DAL.Context;
 using Timetracker.Entities.Data;
 using Timetracker.Models.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace Timetracker.BLL.Services.Implementations
 {
@@ -16,12 +18,16 @@ namespace Timetracker.BLL.Services.Implementations
     {
         private readonly TimetrackerDbContext _context;
         private readonly IMapper<TimeLogEntity, TimeLogModel> _timeLogMapper;
+        private readonly UserManager<UserEntity> _userManager;
 
         public TimeLogService(TimetrackerDbContext context,
-            IMapper<TimeLogEntity, TimeLogModel> timeLogMapper)
+            IMapper<TimeLogEntity, TimeLogModel> timeLogMapper,
+            UserManager<UserEntity> userManager)
         {
             _context = context;
             _timeLogMapper = timeLogMapper;
+
+            _userManager = userManager;
         }
 
         public async Task<TimeLogModel> CreateTimeLog(TimeLogModel timeLog)
@@ -59,7 +65,6 @@ namespace Timetracker.BLL.Services.Implementations
         public async Task<TimeLogModel> UpdateTimeLog(TimeLogModel timeLog)
         {
             var entityToUpdate = await _context.TimeLogs
-                                    .Include(x => x.ProjectUserRoleEntity)
                                     .FirstOrDefaultAsync(x => x.Id == timeLog.Id);
 
             if (entityToUpdate == null)
@@ -67,14 +72,10 @@ namespace Timetracker.BLL.Services.Implementations
                 throw new NoSuchEntityException("The entity does not exist");
             }
 
-            if (entityToUpdate.ProjectUserRoleId != timeLog.ProjectUserRoleId)
-            {
-                entityToUpdate.ProjectUserRoleEntity = await _context.ProjectsUsersRoles.FirstOrDefaultAsync(pur => pur.ProjectId == timeLog.ProjectId); ;
-            }
-
+            entityToUpdate.ProjectId = timeLog.ProjectId;
             entityToUpdate.Description = timeLog.Description;
             entityToUpdate.Logs = timeLog.Logs;
-            entityToUpdate.Date = DateTime.Parse(timeLog.Date, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            entityToUpdate.Date = timeLog.Date;
             entityToUpdate.Duration = timeLog.Duration;
 
             _context.TimeLogs.Update(entityToUpdate);
@@ -84,19 +85,16 @@ namespace Timetracker.BLL.Services.Implementations
         }
 
 
-        public async Task<List<TimeLogModel>> GetTimeLogList(TimeLogFilter timeLogFilter)
+        public async Task<List<TimeLogModel>> GetTimeLogList(TimeLogFilter timeLogFilter, ClaimsPrincipal user)
         {
-            int userId = 2;
-
+            var userId = int.Parse(_userManager.GetUserId(user));
             var projectsFilter = timeLogFilter.ProjectIds;
             var timeFilter = timeLogFilter.ActivityDateRangeFilter;
 
             var timeLogs = await _context.TimeLogs
-                                .Include(tl => tl.ProjectUserRoleEntity)
-                                    .ThenInclude(pur => pur.ProjectEntity)
-                                .Include(tl => tl.ProjectUserRoleEntity)
-                                    .ThenInclude(pur => pur.UserEntity)
-                                .Where(tl => tl.ProjectUserRoleEntity.UserId == userId && tl.Date >= timeFilter.DateFrom && tl.Date <= timeFilter.DateTo)
+                                .Include(tl => tl.Project)
+                                .Include(tl => tl.User)
+                                .Where(tl => tl.UserId == userId && tl.Date >= timeFilter.DateFrom && tl.Date <= timeFilter.DateTo)
                                 .Select(tl => _timeLogMapper.Map(tl))
                                 .ToListAsync();
 

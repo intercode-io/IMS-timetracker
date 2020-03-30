@@ -11,7 +11,10 @@ namespace Timetracker.BLL.Mappers.Implementations
             return new UserEntity
             {
                 Id = source.Id,
-                FirstName = source.FirstName
+                Email = source.Email,
+                FirstName = source.FirstName,
+                LastName = source.LastName,
+                PhotoUrl = source.PhotoUrl,
             };
         }
 
@@ -20,7 +23,10 @@ namespace Timetracker.BLL.Mappers.Implementations
             return new UserModel
             {
                 Id = source.Id,
-                FirstName = source.FirstName
+                Email = source.Email,
+                FirstName = source.FirstName,
+                LastName = source.LastName,
+                PhotoUrl = source.PhotoUrl,
             };
         }
     }

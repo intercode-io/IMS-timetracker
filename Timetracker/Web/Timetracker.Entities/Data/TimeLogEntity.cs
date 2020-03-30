@@ -7,9 +7,13 @@ namespace Timetracker.Entities.Data
     {
         public int Id { get; set; }
 
-        public int ProjectUserRoleId { get; set; }
+        public int ProjectId { get; set; }
 
-        public ProjectUserRoleEntity ProjectUserRoleEntity { get; set; }
+        public ProjectEntity Project { get; set; }
+
+        public int UserId { get; set; }
+
+        public UserEntity User { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime Date { get; set; }

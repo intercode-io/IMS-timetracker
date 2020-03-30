@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Timetracker.BLL.Services.Interfaces;
 using Timetracker.Models.Data;
 
 namespace Timetracker.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/timeLog")]
     [ApiController]
-
     public class TimeLogController : ControllerBase
     {
         private readonly ITimeLogService _timeLogService;
@@ -23,7 +24,7 @@ namespace Timetracker.Web.Controllers
         [HttpPost("getList")]
         public async Task<ActionResult> GetTimeLog([FromBody] TimeLogFilter timeLogFilter)
         {
-            var result = await _timeLogService.GetTimeLogList(timeLogFilter);
+            var result = await _timeLogService.GetTimeLogList(timeLogFilter, User);
 
             return Ok(result);
         }
