@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Timetracker.Models.Data
 {
     public class ProjectModel
@@ -7,5 +9,7 @@ namespace Timetracker.Models.Data
         public string Title { get; set; }
 
         public string Color { get; set; }
+
+        public List<UserModel> Members { get; set; }
     }
 }

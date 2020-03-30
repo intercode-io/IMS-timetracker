@@ -7,9 +7,11 @@ namespace Timetracker.BLL.Services.Interfaces
 {
     public interface IProjectService
     {
-        Task<ProjectModel> CreateProject(ProjectModel project, ClaimsPrincipal user);
+        Task<ProjectModel> CreateProject(ProjectModel project);
 
-        Task<List<ProjectModel>> GetProjects(ClaimsPrincipal user);
+        Task<List<ProjectModel>> GetProjects();
+
+        Task<List<ProjectModel>> GetUserProjects(ClaimsPrincipal user);
 
         Task<ProjectModel> UpdateProject(ProjectModel project);
 

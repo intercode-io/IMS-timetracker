@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Timetracker.BLL.Exceptions;
@@ -22,6 +24,15 @@ namespace Timetracker.BLL.Services.Implementations
         {
             _context = context;
             _userMapper = userMapper;
+        }
+
+        public async Task<List<UserModel>> GetAllUsers()
+        {
+            var users = await _context.Users
+                .Select(user => _userMapper.Map(user))
+                .ToListAsync();
+
+            return users;
         }
 
         public async Task<UserModel> GetUser(int id)

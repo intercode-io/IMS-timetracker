@@ -32,7 +32,18 @@ namespace Timetracker.BLL.Services.Implementations
             _userManager = userManager;
         }
 
-        public async Task<List<ProjectModel>> GetProjects(ClaimsPrincipal user)
+        public async Task<List<ProjectModel>> GetProjects()
+        {
+            var projectsList = await _context.Projects
+                .Include(p => p.UserProjects)
+                    .ThenInclude(up => up.User)
+                .Select(p => _projectMapper.Map(p))
+                .ToListAsync();
+
+            return projectsList;
+        }
+
+        public async Task<List<ProjectModel>> GetUserProjects(ClaimsPrincipal user)
         {
             var userId = int.Parse(_userManager.GetUserId(user));
 
@@ -45,23 +56,19 @@ namespace Timetracker.BLL.Services.Implementations
             return projectsList;
         }
 
-        public async Task<ProjectModel> CreateProject(ProjectModel projectModel, ClaimsPrincipal user)
+        public async Task<ProjectModel> CreateProject(ProjectModel projectModel)
         {
-            var userId = int.Parse(_userManager.GetUserId(user));
-
             try
             {
                 var projectEntity = _projectMapper.Map(projectModel);
 
                 await _context.Projects.AddAsync(projectEntity);
-                await _context.UserProjects.AddAsync(new UserProjectsEntity
-                {
-                    UserId = userId,
-                    ProjectId = projectEntity.Id,
-                });
                 await _context.SaveChangesAsync();
 
-                return _projectMapper.Map(projectEntity);
+                var result = _projectMapper.Map(projectEntity);
+                result.Members = projectModel.Members;
+
+                return result;
             }
             catch (Exception exception)
             {
@@ -71,17 +78,29 @@ namespace Timetracker.BLL.Services.Implementations
 
         public async Task<ProjectModel> UpdateProject(ProjectModel project)
         {
-            var projectEntity = await _context.Projects.FirstOrDefaultAsync(a => a.Id == project.Id);
+            var existingProjectEntity = _context.Projects
+                        .Include(p => p.UserProjects)
+                        .FirstOrDefault(p => p.Id == project.Id);
 
-            if (projectEntity == null)
+            var existingUserProjects = existingProjectEntity?.UserProjects;
+
+            if (existingProjectEntity == null)
             {
                 throw new NoSuchEntityException("The entity does not exist");
             }
 
-            projectEntity.Title = project.Title;
-            projectEntity.Color = project.Color;
+            var incomingProjectEntity = _projectMapper.Map(project);
+            var incomingUserProjects = incomingProjectEntity.UserProjects;
 
-            _context.Projects.Update(projectEntity);
+            var userProjectsToRemove = existingUserProjects.Where(eup => incomingUserProjects.All(iup => iup.UserId != eup.UserId));
+            _context.UserProjects.RemoveRange(userProjectsToRemove);
+            var userProjectsToAdd = incomingUserProjects.Where(iup => existingUserProjects.All(eup => eup.UserId != iup.UserId));
+            _context.UserProjects.AddRange(userProjectsToAdd);
+
+            existingProjectEntity.Title = incomingProjectEntity.Title;
+            existingProjectEntity.Color = incomingProjectEntity.Color;
+
+            _context.Projects.Update(existingProjectEntity);
             await _context.SaveChangesAsync();
 
             return project;
@@ -99,7 +118,6 @@ namespace Timetracker.BLL.Services.Implementations
             }
 
             _context.Projects.Remove(projectEntityToRemove);
-            _context.UserProjects.RemoveRange(projectEntityToRemove.UserProjects);
             await _context.SaveChangesAsync();
 
             return true;

@@ -24,10 +24,18 @@ namespace Timetracker.Web.Controllers
             _roleService = roleService;
         }
 
-        [HttpGet("getList")]
+        [HttpGet("getProjects")]
         public async Task<IActionResult> GetProjects()
         {
-            var result = await _projectService.GetProjects(User);
+            var result = await _projectService.GetProjects();
+
+            return Ok(result);
+        }
+
+        [HttpGet("getUserProjects")]
+        public async Task<IActionResult> GetUserProjects()
+        {
+            var result = await _projectService.GetUserProjects(User);
 
             return Ok(result);
         }
@@ -35,7 +43,7 @@ namespace Timetracker.Web.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] ProjectModel projectModel)
         {
-            var result = await _projectService.CreateProject(projectModel, User);
+            var result = await _projectService.CreateProject(projectModel);
 
             return Ok(result);
         }
