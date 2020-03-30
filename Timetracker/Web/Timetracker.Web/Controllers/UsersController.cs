@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Timetracker.BLL.Exceptions;
 using Timetracker.BLL.Services.Interfaces;
@@ -6,6 +8,7 @@ using Timetracker.Models.Data;
 
 namespace Timetracker.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -18,6 +21,14 @@ namespace Timetracker.Web.Controllers
         )
         {
             _userService = userServivce;
+        }
+
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var res = await _userService.GetAllUsers();
+
+            return Ok(res);
         }
 
         [HttpGet("get/{id}")]
